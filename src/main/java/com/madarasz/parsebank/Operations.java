@@ -7,6 +7,7 @@ import com.madarasz.parsebank.database.Entry;
 import com.madarasz.parsebank.database.EntryRepository;
 import com.madarasz.parsebank.database.stats.MonthlyStat;
 import com.madarasz.parsebank.database.stats.StatRow;
+import com.madarasz.parsebank.database.stats.SubCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,9 +117,9 @@ public class Operations {
         for (LocalDate date = minDate; date.isBefore(maxDate); date = date.plusMonths(1)) {
             Date fromDate = Date.from(date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
             Date toDate = Date.from(date.plusMonths(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-            List<Integer> subcategory = new ArrayList<>();
+            List<SubCategory> subcategory = new ArrayList<>();
             for (Category category : categories) {
-                subcategory.add(entryRepository.sumCategoryMoneyBetweenDates(fromDate, toDate, category.getTitle()));
+                subcategory.add(new SubCategory(entryRepository.sumCategoryMoneyBetweenDates(fromDate, toDate, category.getTitle()), category.getTitle()));
             }
             StatRow row = new StatRow(dateFormatSHort.format(fromDate),
                     entryRepository.sumMoneyBetweenDates(fromDate, toDate), subcategory, 0,

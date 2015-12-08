@@ -8,14 +8,14 @@ import java.util.List;
 public class StatRow {
     private String startDate;
     private int moneyflow;
-    private List<Integer> subcategory;
+    private List<SubCategory> subCategories;
     private int cashflow;
     private int uncategorized;
 
-    public StatRow(String startDate, int moneyflow, List<Integer> subcategory, int cash, int uncategorized) {
+    public StatRow(String startDate, int moneyflow, List<SubCategory> subCategories, int cash, int uncategorized) {
         this.startDate = startDate;
         this.moneyflow = moneyflow;
-        this.subcategory = subcategory;
+        this.subCategories = subCategories;
         this.cashflow = cash;
         this.uncategorized = uncategorized;
     }
@@ -28,8 +28,8 @@ public class StatRow {
         return moneyflow;
     }
 
-    public List<Integer> getSubcategory() {
-        return subcategory;
+    public List<SubCategory> getSubCategories() {
+        return subCategories;
     }
 
     public int getCashflow() {

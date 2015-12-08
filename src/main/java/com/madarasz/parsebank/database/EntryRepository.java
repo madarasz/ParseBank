@@ -30,6 +30,9 @@ public interface EntryRepository extends GraphRepository<Entry>, RelationshipOpe
     @Query("MATCH (e:Entry) WHERE e.date >= {0} AND e.date < {1} RETURN e")
     List<Entry> getBetweenDates(Date begin, Date end);
 
+    @Query("MATCH (e:Entry) WHERE e.date >= {0} AND e.date < {1} AND NOT (e:Entry)<-[:BELONGS]-(:Category) RETURN e")
+    List<Entry> getUncategorizedBetweenDates(Date begin, Date end);
+
     @Query("MATCH (e:Entry)<-[:BELONGS]-(:Category {title: {2}}) WHERE e.date >= {0} AND e.date < {1} RETURN e")
     List<Entry> getCategoryBetweenDates(Date begin, Date end, String categoryTitle);
 

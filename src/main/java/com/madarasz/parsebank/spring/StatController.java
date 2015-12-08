@@ -28,6 +28,7 @@ import java.util.List;
 public class StatController {
 
     private static final Logger logger = LoggerFactory.getLogger(StatController.class);
+    private static final DateFormat df = new SimpleDateFormat("yyyy.MMM.dd");
 
     @Autowired
     Operations operations;
@@ -49,17 +50,7 @@ public class StatController {
     @RequestMapping(value="/Entry/Month/{year}.{month}", method = RequestMethod.GET)
     public @ResponseBody List<Entry> getMonth(@PathVariable(value="year") String year,
                                               @PathVariable(value="month") String month) {
-        try {
-            DateFormat df = new SimpleDateFormat("yyyy.MMM.dd");
-            Date fromDate = df.parse(year + "." + month + ".1");
-            Calendar toCalendar = Calendar.getInstance();
-            toCalendar.setTime(fromDate);
-            toCalendar.add(Calendar.MONTH, 1);
-            return entryRepository.getBetweenDates(fromDate, toCalendar.getTime());
-        } catch (ParseException ex) {
-            logger.error("logged parse exception", ex);
-            return new ArrayList<>();
-        }
+        return entryRepository.getBetweenDates(datefromString(year, month), datePlusMonthfromString(year, month));
     }
 
     @RequestMapping(value="/Entry/Filter/{title}/{year}.{month}", method = RequestMethod.GET)
@@ -67,16 +58,35 @@ public class StatController {
             @PathVariable(value="title") String title,
             @PathVariable(value="year") String year,
             @PathVariable(value="month") String month) {
+        return entryRepository.getCategoryBetweenDates(datefromString(year, month), datePlusMonthfromString(year, month), title);
+    }
+
+    @RequestMapping(value="/Entry/Uncategorized", method = RequestMethod.GET)
+    public @ResponseBody List<Entry> getUncategorized() {
+        return entryRepository.getUncategorized();
+    }
+
+    @RequestMapping(value="/Entry/Uncategorized/{year}.{month}", method = RequestMethod.GET)
+    public @ResponseBody List<Entry> getUncategorizedMonth(
+            @PathVariable(value="year") String year,
+            @PathVariable(value="month") String month) {
+        return entryRepository.getUncategorizedBetweenDates(datefromString(year, month), datePlusMonthfromString(year, month));
+    }
+
+    private Date datefromString(String year, String month) {
         try {
-            DateFormat df = new SimpleDateFormat("yyyy.MMM.dd");
-            Date fromDate = df.parse(year + "." + month + ".1");
-            Calendar toCalendar = Calendar.getInstance();
-            toCalendar.setTime(fromDate);
-            toCalendar.add(Calendar.MONTH, 1);
-            return entryRepository.getCategoryBetweenDates(fromDate, toCalendar.getTime(), title);
-        } catch (ParseException ex) {
-            logger.error("logged parse exception", ex);
-            return new ArrayList<>();
+            return df.parse(year + "." + month + ".1");
+        } catch (ParseException e) {
+            logger.error("logged parse exception", e);
+            return new Date();
         }
+    }
+
+    private Date datePlusMonthfromString(String year, String month) {
+        Date fromDate = datefromString(year, month);
+        Calendar toCalendar = Calendar.getInstance();
+        toCalendar.setTime(fromDate);
+        toCalendar.add(Calendar.MONTH, 1);
+        return  toCalendar.getTime();
     }
 }
