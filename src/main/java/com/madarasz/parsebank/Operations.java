@@ -73,10 +73,10 @@ public class Operations {
     }
 
     public void resetCategories() {
-        List<Category> categories = categoryRepository.getAll();
-        for (Category category : categories) {
-            category.deleteEntries();
-            categoryRepository.save(category);
+        List<Entry> entries = entryRepository.getAll();
+        for (Entry entry : entries) {
+            entry.setCategory(null);
+            entryRepository.save(entry);
         }
     }
 
@@ -87,19 +87,30 @@ public class Operations {
 
         for (Category category : categories) {
             Pattern pattern = Pattern.compile(category.getRegex());
+            int count = 0;
             for (Entry entry : entries) {
                 Matcher matcher1 = pattern.matcher(entry.getCode());
                 Matcher matcher2 = pattern.matcher(entry.getMessage());
                 Matcher matcher3 = pattern.matcher(entry.getRecipientName());
-                if ((matcher1.find()) || (matcher2.find()) || (matcher3.find())) {
-                    Entry already = entryRepository.isInCategory(entry.getSerial(), entry.getDate());
+                boolean match1 = matcher1.find();
+                boolean match2 = matcher2.find();
+                boolean match3 = matcher3.find();
+                if ((match1) ||
+                        ((match2) && (!entry.getMessage().equals(""))) ||
+                        (match3)) {
+                    Entry already = entryRepository.isInCategory(entry.getId());
                     if (already != null) {
-                        logger.warn("Entry already in category: " + already.toString());
+                        logger.warn(String.format("Cannot put into category: %s (%s) - already in category %s (%s)", category.getTitle(), category.getRegex(), already.getCategory().getTitle(), already.getCategory().getRegex()));
+                        logger.warn("Entry already in a category: " + already.toString());
                     } else {
-                        category.addEntry(entry);
+                        logger.trace(String.format("Putting into category %s (%s): %s", category.getTitle(), category.getRegex(), entry.toString()));
+                        entry.setCategory(category);
+                        entryRepository.save(entry);
+                        count++;
                     }
                 }
             }
+            category.setCount(count);
             categoryRepository.save(category);
         }
     }

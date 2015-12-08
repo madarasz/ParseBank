@@ -1,9 +1,13 @@
 package com.madarasz.parsebank.database;
 
+import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
+import org.springframework.data.neo4j.annotation.RelatedTo;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -19,8 +23,10 @@ public class Entry {
     private String recipientName;
     private String message;
     private int money;
-    @DateTimeFormat(pattern="yyyy.MM.dd")
     private Date date;
+    private String formattedDate; // faking formating
+    @RelatedTo(type = "BELONGS") private @Fetch Category category;
+    @RelatedTo(type = "FORCED") private @Fetch Category forcedCategory;
 
     public Entry() {
     }
@@ -67,12 +73,41 @@ public class Entry {
         return id;
     }
 
+    public Category getCategory() {
+        if (forcedCategory == null) {
+            return category;
+        } else {
+            return forcedCategory;
+        }
+    }
+
+    public Category getForcedCategory() {
+        return forcedCategory;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public void setForcedCategory(Category forcedCategory) {
+        this.forcedCategory = forcedCategory;
+    }
+
+    // totally fake
+    public String getFormattedDate() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
+        return dateFormat.format(date);
+    }
+
     @Override
     public String toString() {
         return "Entry{" +
-                "recipientName='" + recipientName + '\'' +
+                "id='" + id + '\'' +
+                ", recipientName='" + recipientName + '\'' +
                 ", money=" + money +
                 ", date=" + date +
+                ", code=" + code +
+                ", message=" + message +
                 '}';
     }
 }

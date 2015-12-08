@@ -123,18 +123,68 @@
                                 <th>recipient</th>
                                 <th>message</th>
                                 <th>money</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tr th:each="entry : ${uncategorizedEntries}">
-                                <td th:text="${entry.date}"></td>
+                                <td th:text="${entry.formattedDate}"></td>
                                 <td th:text="${entry.code}"></td>
                                 <!--<td th:text="${entry.accountNum}"></td>-->
                                 <td th:text="${entry.recipientName}"></td>
                                 <td th:text="${entry.message}"></td>
                                 <td th:text="@{__${entry.money}__ Ft}" class="text-right"></td>
+                                <td>
+                                    <form class="form-horizontal" role="form" method="post" th:action="'/Category/Reassign/' + ${entry.id}">
+                                        <select name="category">
+                                            <option th:each="category : ${categories}" th:text="${category.title}" th:value="${category.title}"></option>
+                                        </select>
+                                        <button type="submit" class="btn btn-default btn-xs">Reassign</button>
+                                    </form>
+                                </td>
                             </tr>
                         </table>
                         <p>Uncategorized entries: <span th:text="${uncategorized}"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Forced entries-->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Forced entries</div>
+                    <div class="panel-body">
+                        <p>Forced entries: <span th:text="${countForced}"></span></p>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>date</th>
+                                <th>code</th>
+                                <!--<th>account num</th>-->
+                                <th>recipient</th>
+                                <th>message</th>
+                                <th>money</th>
+                                <th>category</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tr th:each="entry : ${forced}">
+                                <td th:text="${entry.formattedDate}"></td>
+                                <td th:text="${entry.code}"></td>
+                                <!--<td th:text="${entry.accountNum}"></td>-->
+                                <td th:text="${entry.recipientName}"></td>
+                                <td th:text="${entry.message}"></td>
+                                <td th:text="@{__${entry.money}__ Ft}" class="text-right"></td>
+                                <td th:text="${entry.forcedCategory.title}"></td>
+                                <td>
+                                    <form class="form-horizontal" role="form" method="post" th:action="'/Category/Reset/' + ${entry.id}">
+                                        <button type="submit" class="btn btn-default btn-xs">Reset</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </table>
+                        <p>Forced entries: <span th:text="${countForced}"></span></p>
                     </div>
                 </div>
             </div>

@@ -16,4 +16,6 @@ public interface CategoryRepository extends GraphRepository<Category>, Relations
     List<Category> getAll();
 
     Category findById(Long id);
+
+    Category findByTitle(String title);
 }

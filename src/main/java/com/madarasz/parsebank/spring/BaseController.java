@@ -45,6 +45,8 @@ public class BaseController {
         model.addAttribute("categories", categoryRepository.getAll());
         model.addAttribute("uncategorizedEntries", entryRepository.getUncategorized());
         model.addAttribute("uncategorized", entryRepository.countNotInCategory());
+        model.addAttribute("forced", entryRepository.getForced());
+        model.addAttribute("countForced", entryRepository.countForced());
         return "Index";
     }
 

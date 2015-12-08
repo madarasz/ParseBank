@@ -3,6 +3,8 @@ package com.madarasz.parsebank.spring;
 import com.madarasz.parsebank.Operations;
 import com.madarasz.parsebank.database.Category;
 import com.madarasz.parsebank.database.CategoryRepository;
+import com.madarasz.parsebank.database.Entry;
+import com.madarasz.parsebank.database.EntryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ public class CategoryControiler {
     @Autowired
     Operations operations;
 
+    @Autowired
+    EntryRepository entryRepository;
+
     @RequestMapping(value="/Category", method = RequestMethod.POST)
     public String create(@RequestParam(value = "title") String title,
                          @RequestParam(value = "regex") String regex) {
@@ -46,6 +51,24 @@ public class CategoryControiler {
     @RequestMapping(value="/Category/Recalculate", method = RequestMethod.POST)
     public String recalculate() {
         operations.assignCategories();
+        return "redirect:/";
+    }
+
+    @RequestMapping(value="/Category/Reassign/{id}", method = RequestMethod.POST)
+    public String reassign(@PathVariable(value = "id") Long id,
+                           @RequestParam(value = "category") String category) {
+        Category category1 = categoryRepository.findByTitle(category);
+        Entry entry = entryRepository.findById(id);
+        entry.setForcedCategory(category1);
+        entryRepository.save(entry);
+        return "redirect:/";
+    }
+
+    @RequestMapping(value="/Category/Reset/{id}", method = RequestMethod.POST)
+    public String reset(@PathVariable(value = "id") Long id) {
+        Entry entry = entryRepository.findById(id);
+        entry.setForcedCategory(null);
+        entryRepository.save(entry);
         return "redirect:/";
     }
 }

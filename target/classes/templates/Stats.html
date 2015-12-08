@@ -23,17 +23,13 @@
                             <thead>
                                 <th>month</th>
                                 <th>flow</th>
-                                <div th:each="category : ${monthlyStat.categoryTitles}">
-                                    <th th:text="${category}" th:onclick="'updateTable(\'/Entry/Category/' + ${category} + '\')'" class="fake-link"></th>
-                                </div>
+                                <th th:each="category : ${monthlyStat.categoryTitles}" th:text="${category}" th:onclick="'updateTable(\'/Entry/Category/' + ${category} + '\')'" class="fake-link"></th>
                                 <th th:onclick="'updateTable(\'/Entry/Uncategorized\')'" class="fake-link">uncategorized</th>
                             </thead>
                             <tr th:each="row : ${monthlyStat.rows}">
                                 <td th:text="${row.startDate}" th:onclick="'updateTable(\'/Entry/Month/' + ${row.startDate} + '\')'" class="fake-link"></td>
                                 <td th:text="${row.moneyflow}"></td>
-                                <div th:each="category : ${row.subCategories}">
-                                    <td th:text="${category.money}" th:onclick="'updateTable(\'/Entry/Filter/' + ${category.categoryName} + '/'+ ${row.startDate} + '\')'" class="fake-link text-right"></td>
-                                </div>
+                                <td th:each="category : ${row.subCategories}" th:text="${category.money}" th:onclick="'updateTable(\'/Entry/Filter/' + ${category.categoryName} + '/'+ ${row.startDate} + '\')'" class="fake-link text-right"></td>
                                 <td th:text="${row.uncategorized}" th:onclick="'updateTable(\'/Entry/Uncategorized/' + ${row.startDate} + '\')'" class="fake-link"></td>
                             </tr>
                         </table>
@@ -77,7 +73,7 @@
                     $('#entries').empty();
                     $.each(data, function(index, element) {
                         $('#entries').append($('<tr>').append($('<td>', {
-                            text: element.date
+                            text: element.formattedDate
                         }), $('<td>', {
                             text: element.code
                         }), $('<td>', {
