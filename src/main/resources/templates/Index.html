@@ -1,0 +1,152 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+</head>
+<body>
+    <div th:replace="fragments/head :: scripts"></div>
+    <div class="container">
+        <h4 class="page-header">Parse Bank stuff</h4>
+
+        <!--Messages-->
+        <div class="alert alert-success" role="alert" th:text="${successMessage}" th:if="${successMessage != null}"></div>
+        <div class="alert alert-warning" role="alert" th:text="${warningMessage}" th:if="${warningMessage != null}"></div>
+        <div class="alert alert-danger" role="alert" th:text="${errorMessage}" th:if="${errorMessage != null}"></div>
+
+        <div class="row">
+
+            <!--Parse CSV-->
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Parse CSV</div>
+                    <div class="panel-body">
+                        <form class="form-horizontal" role="form" method="post" action="/ParseCSV">
+                            <div class="row">
+                                <label class="col-md-3 control-label">Current entries:</label>
+                                <div class="col-md-9">
+                                    <span th:text="${countEntries}"></span>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-3 control-label">Parse CSV:</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" type="text" name="path" placeholder="CSV path"/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-offset-3 col-md-9">
+                                    <button type="submit" class="btn btn-default">Parse</button>
+                                </div>
+                            </div>
+                            <!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!--New Category-->
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">New/Edit Category</div>
+                    <div class="panel-body">
+                        <form class="form-horizontal" role="form" method="post" action="/Category" name="editc">
+                            <div class="row form-group">
+                                <label class="col-md-3 control-label">Title:</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" type="text" name="title" placeholder="Category title"/>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-3 control-label">Regex:</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" type="text" name="regex" placeholder="Category regex"/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-offset-3 col-md-9">
+                                    <button type="submit" class="btn btn-default">Create/Edit</button>
+                                </div>
+                            </div>
+                            <!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+        <!--List Categories-->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Categories</div>
+                        <div class="panel-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>title</th>
+                                        <th>regex</th>
+                                        <th>entry count</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tr th:each="category : ${categories}">
+                                    <td th:text="${category.title}"></td>
+                                    <td th:text="${category.regex}"></td>
+                                    <td th:text="${category.count}"></td>
+                                    <td><a th:onclick="'editCategory(\'' + ${category.title} + '\',\'' + ${category.regex} + '\')'">edit</a></td>
+                                    <td><a th:href="@{/Category/Delete/__${category.id}__}">delete</a></td>
+                                </tr>
+                            </table>
+                            <form class="form-horizontal" role="form" method="post" action="/Category/Recalculate">
+                                <button type="submit" class="btn btn-default">Recalculate</button>
+                                <!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--List Uncategorized entries-->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Uncategorized entries</div>
+                    <div class="panel-body">
+                        <p>Uncategorized entries: <span th:text="${uncategorized}"></span></p>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>date</th>
+                                <th>code</th>
+                                <!--<th>account num</th>-->
+                                <th>recipient</th>
+                                <th>message</th>
+                                <th>money</th>
+                            </tr>
+                            </thead>
+                            <tr th:each="entry : ${uncategorizedEntries}">
+                                <td th:text="${#dates.format(entry.date)}"></td>
+                                <td th:text="${entry.code}"></td>
+                                <!--<td th:text="${entry.accountNum}"></td>-->
+                                <td th:text="${entry.recipientName}"></td>
+                                <td th:text="${entry.message}"></td>
+                                <td th:text="@{__${entry.money}__ Ft}" class="text-right"></td>
+                            </tr>
+                        </table>
+                        <p>Uncategorized entries: <span th:text="${uncategorized}"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        function editCategory(title, regex) {
+            document.editc.title.value = title;
+            document.editc.regex.value = regex;
+        }
+        /*]]>*/
+    </script>
+</body>
+</html>
