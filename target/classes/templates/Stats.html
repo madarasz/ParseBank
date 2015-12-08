@@ -24,15 +24,15 @@
                                 <th>month</th>
                                 <th>flow</th>
                                 <div th:each="category : ${monthlyStat.categoryTitles}">
-                                    <th th:text="${category}"> </th>
+                                    <th th:text="${category}" th:onclick="'updateTable(\'/Entry/Category/' + ${category} + '\')'" class="fake-link"></th>
                                 </div>
                                 <th>uncategorized</th>
                             </thead>
                             <tr th:each="row : ${monthlyStat.rows}">
-                                <td th:text="${row.startDate}"></td>
+                                <td th:text="${row.startDate}" th:onclick="'updateTable(\'/Entry/Month/' + ${row.startDate} + '\')'" class="fake-link"></td>
                                 <td th:text="${row.moneyflow}"></td>
                                 <div th:each="category : ${row.subcategory}">
-                                    <td th:text="${category}" class="text-right"></td>
+                                    <td th:text="${category}" th:onclick="'updateTable(\'/Entry/Filter/' + ${category} + '/'+ ${row.startDate} + '\')'" class="fake-link text-right"></td>
                                 </div>
                                 <td th:text="${row.uncategorized}"></td>
                             </tr>
@@ -41,9 +41,57 @@
                 </div>
             </div>
         </div>
+
+        <div class="row">
+
+            <!--Monthly stats-->
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Entries</div>
+                    <div class="panel-body">
+                        <table class="table small-text">
+                            <thead>
+                                <th>date</th>
+                                <th>code</th>
+                                <!--<th>account num</th>-->
+                                <th>recipient</th>
+                                <th>message</th>
+                                <th>money</th>
+                            </thead>
+                            <tbody id="entries"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <script th:inline="javascript">
         /*<![CDATA[*/
+
+        function updateTable(urlvalue) {
+            var jsonDataChart = $.ajax({
+                url: urlvalue,
+                dataType: "json",
+                async: false,
+                success: function(data) {
+                    $('#entries').empty();
+                    $.each(data, function(index, element) {
+                        $('#entries').append($('<tr>').append($('<td>', {
+                            text: element.date
+                        }), $('<td>', {
+                            text: element.code
+                        }), $('<td>', {
+                            text: element.recipientName
+                        }), $('<td>', {
+                            text: element.message
+                        }), $('<td>', {
+                            text: element.money,
+                            class: 'text-right'
+                        })));
+                    });
+                }
+            });
+        }
 
         /*]]>*/
     </script>

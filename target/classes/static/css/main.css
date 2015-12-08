@@ -7,3 +7,9 @@
 .small-text {
     font-size: 12px;
 }
+
+.fake-link {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+}

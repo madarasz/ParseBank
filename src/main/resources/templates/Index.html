@@ -126,7 +126,7 @@
                             </tr>
                             </thead>
                             <tr th:each="entry : ${uncategorizedEntries}">
-                                <td th:text="${#dates.format(entry.date)}"></td>
+                                <td th:text="${entry.date}"></td>
                                 <td th:text="${entry.code}"></td>
                                 <!--<td th:text="${entry.accountNum}"></td>-->
                                 <td th:text="${entry.recipientName}"></td>
