@@ -26,7 +26,7 @@ public interface EntryRepository extends GraphRepository<Entry>, RelationshipOpe
     @Query("MATCH (e:Entry) WHERE NOT (e:Entry)-->(:Category) RETURN COUNT(DISTINCT e)")
     int countNotInCategory();
 
-    @Query("MATCH (e:Entry) WHERE NOT (e:Entry)-->(:Category) RETURN e")
+    @Query("MATCH (e:Entry) WHERE NOT (e:Entry)-->(:Category) RETURN e ORDER BY e.date ASC")
     List<Entry> getUncategorized();
 
     @Query("MATCH (e:Entry)-[:FORCED]->(:Category) RETURN e ORDER BY e.date ASC")
@@ -71,4 +71,7 @@ public interface EntryRepository extends GraphRepository<Entry>, RelationshipOpe
 
     @Query("MATCH (e:Entry {code: 'cash'}) RETURN COUNT(DISTINCT e)")
     int countCash();
+
+    @Query("MATCH (e:Entry) RETURN SUM(e.money)")
+    int getSum();
 }

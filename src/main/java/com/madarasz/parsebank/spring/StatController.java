@@ -39,6 +39,7 @@ public class StatController {
     @RequestMapping(value="/Stats", method = RequestMethod.GET)
     public String getCPPage(Model model) {
         model.addAttribute("monthlyStat", operations.getMonthlyStat());
+        model.addAttribute("sum", entryRepository.getSum());
         return "Stats";
     }
 
