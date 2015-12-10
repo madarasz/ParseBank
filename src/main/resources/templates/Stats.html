@@ -19,7 +19,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">Monthy stats</div>
                     <div class="panel-body">
-                        <p>Sum: <span th:text="${sum}"></span> Ft</p>
+                        <p>Sum: <span th:text="${#numbers.formatDecimal(sum, 0, 'WHITESPACE', 0, 'COMMA')} + ' Ft'"></span></p>
                         <table class="table small-text">
                             <thead>
                                 <th>month</th>
@@ -30,8 +30,8 @@
                             <tr th:each="row : ${monthlyStat.rows}">
                                 <td th:text="${row.startDate}" th:onclick="'updateTable(\'/Entry/Month/' + ${row.startDate} + '\')'" class="fake-link"></td>
                                 <td th:text="${row.moneyflow}"></td>
-                                <td th:each="category : ${row.subCategories}" th:text="${category.money}" th:onclick="'updateTable(\'/Entry/Filter/' + ${category.categoryName} + '/'+ ${row.startDate} + '\')'" class="fake-link text-right"></td>
-                                <td th:text="${row.uncategorized}" th:onclick="'updateTable(\'/Entry/Uncategorized/' + ${row.startDate} + '\')'" class="fake-link"></td>
+                                <td nowrap="nowrap" th:each="category : ${row.subCategories}" th:text="${#numbers.formatDecimal(category.money, 0, 'WHITESPACE', 0, 'COMMA')} + ' Ft'" th:onclick="'updateTable(\'/Entry/Filter/' + ${category.categoryName} + '/'+ ${row.startDate} + '\')'" class="fake-link text-right"></td>
+                                <td nowrap="nowrap" th:text="${#numbers.formatDecimal(row.uncategorized, 0, 'WHITESPACE', 0, 'COMMA')} + ' Ft'" th:onclick="'updateTable(\'/Entry/Uncategorized/' + ${row.startDate} + '\')'" class="fake-link"></td>
                             </tr>
                         </table>
                     </div>
@@ -82,8 +82,9 @@
                         }), $('<td>', {
                             text: element.message
                         }), $('<td>', {
-                            text: element.money,
-                            class: 'text-right'
+                            text: formatMoney(element.money),
+                            class: 'text-right',
+                            nowrap: 'nowrap'
                         })));
                     });
                 }

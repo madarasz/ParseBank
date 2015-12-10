@@ -132,7 +132,7 @@
                                 <!--<td th:text="${entry.accountNum}"></td>-->
                                 <td th:text="${entry.recipientName}"></td>
                                 <td th:text="${entry.message}"></td>
-                                <td th:text="@{__${entry.money}__ Ft}" class="text-right"></td>
+                                <td nowrap="nowrap" th:text="${#numbers.formatDecimal(entry.money, 0, 'WHITESPACE', 0, 'COMMA')} + ' Ft'" class="text-right"></td>
                                 <td>
                                     <form class="form-horizontal" role="form" method="post" th:action="'/Category/Reassign/' + ${entry.id}">
                                         <select name="category">
@@ -175,7 +175,7 @@
                                 <!--<td th:text="${entry.accountNum}"></td>-->
                                 <td th:text="${entry.recipientName}"></td>
                                 <td th:text="${entry.message}"></td>
-                                <td th:text="@{__${entry.money}__ Ft}" class="text-right"></td>
+                                <td nowrap="nowrap" th:text="${#numbers.formatDecimal(entry.money, 0, 'WHITESPACE', 0, 'COMMA')} + ' Ft'" class="text-right"></td>
                                 <td th:text="${entry.forcedCategory.title}"></td>
                                 <td>
                                     <form class="form-horizontal" role="form" method="post" th:action="'/Category/Reset/' + ${entry.id}">
